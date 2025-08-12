@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import FinnyMascot from '../components/FinnyMascot';
-import { signIn } from '../services/authService';
+import { signIn, signInWithGoogle, signInAsGuest } from '../services/authService';
 import { COLORS } from '../constants/colors';
 
 const LoginScreen = ({ navigation }) => {
@@ -62,6 +62,44 @@ const LoginScreen = ({ navigation }) => {
 
   const navigateToRegister = () => {
     navigation.navigate('Register');
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    
+    try {
+      const result = await signInWithGoogle();
+      
+      if (!result.success) {
+        Alert.alert('Aviso', result.error);
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Erro inesperado ao fazer login com Google');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGuestLogin = async () => {
+    setLoading(true);
+    
+    try {
+      const result = await signInAsGuest();
+      
+      if (result.success) {
+        Alert.alert(
+          'Modo Visitante',
+          'Você está usando o app como visitante. Seus dados não serão salvos permanentemente.',
+          [{ text: 'Entendi' }]
+        );
+      } else {
+        Alert.alert('Erro', result.error || 'Erro ao entrar como visitante');
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Erro inesperado ao entrar como visitante');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -123,10 +161,27 @@ const LoginScreen = ({ navigation }) => {
             />
 
             <CustomButton
+              title="Entrar com Google"
+              onPress={handleGoogleLogin}
+              variant="secondary"
+              style={styles.googleButton}
+              disabled={loading}
+            />
+
+            <CustomButton
               title="Criar nova conta"
               onPress={navigateToRegister}
               variant="outline"
               style={styles.registerButton}
+            />
+
+            <CustomButton
+              title="Entrar como visitante"
+              onPress={handleGuestLogin}
+              variant="outline"
+              style={[styles.guestButton, { borderColor: COLORS.darkGray }]}
+              textStyle={{ color: COLORS.darkGray }}
+              disabled={loading}
             />
           </View>
         </ScrollView>
@@ -177,7 +232,13 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 16,
   },
+  googleButton: {
+    marginBottom: 12,
+  },
   registerButton: {
+    marginBottom: 12,
+  },
+  guestButton: {
     marginBottom: 20,
   },
 });

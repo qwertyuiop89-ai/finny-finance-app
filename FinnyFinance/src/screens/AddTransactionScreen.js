@@ -20,6 +20,7 @@ const AddTransactionScreen = ({ navigation }) => {
   const [transactionType, setTransactionType] = useState('expense'); // income ou expense
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
+  const [note, setNote] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(false);
@@ -54,6 +55,7 @@ const AddTransactionScreen = ({ navigation }) => {
         type: transactionType,
         amount: parseFloat(amount),
         description: description.trim(),
+        note: note.trim(),
         category: selectedCategory,
         date: date,
       };
@@ -190,6 +192,16 @@ const AddTransactionScreen = ({ navigation }) => {
             value={date}
             onChangeText={setDate}
             leftIcon="calendar"
+          />
+
+          <CustomInput
+            label="Nota (opcional)"
+            placeholder="Adicione uma observação..."
+            value={note}
+            onChangeText={setNote}
+            leftIcon="document-text-outline"
+            multiline
+            numberOfLines={3}
           />
         </View>
 

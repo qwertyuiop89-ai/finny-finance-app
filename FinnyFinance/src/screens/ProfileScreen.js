@@ -164,33 +164,22 @@ const ProfileScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-          {/* Notificações */}
-          <View style={styles.settingItem}>
+          {/* Configurações Avançadas */}
+          <TouchableOpacity 
+            style={styles.settingItem}
+            onPress={() => navigation.navigate('Settings')}
+          >
             <View style={styles.settingInfo}>
-              <Ionicons name="notifications" size={24} color={COLORS.primary} />
+              <Ionicons name="settings" size={24} color={COLORS.primary} />
               <View style={styles.settingText}>
-                <Text style={styles.settingLabel}>Notificações</Text>
-                <Text style={styles.settingValue}>Ativadas</Text>
+                <Text style={styles.settingLabel}>Configurações</Text>
+                <Text style={styles.settingValue}>Tema, idioma, backup</Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.editButton}>
+            <View style={styles.editButton}>
               <Ionicons name="chevron-forward" size={20} color={COLORS.darkGray} />
-            </TouchableOpacity>
-          </View>
-
-          {/* Tema */}
-          <View style={styles.settingItem}>
-            <View style={styles.settingInfo}>
-              <Ionicons name="color-palette" size={24} color={COLORS.primary} />
-              <View style={styles.settingText}>
-                <Text style={styles.settingLabel}>Tema</Text>
-                <Text style={styles.settingValue}>Claro</Text>
-              </View>
             </View>
-            <TouchableOpacity style={styles.editButton}>
-              <Ionicons name="chevron-forward" size={20} color={COLORS.darkGray} />
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Conquistas */}

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { BarChart } from 'react-native-chart-kit';
 import FinnyMascot from '../components/FinnyMascot';
 import CustomButton from '../components/CustomButton';
 import { useAuth } from '../hooks/useAuth';
@@ -59,6 +60,29 @@ const DashboardScreen = ({ navigation }) => {
 
   const navigateToReports = () => {
     navigation.navigate('Reports');
+  };
+
+  const navigateToHistory = () => {
+    navigation.navigate('History');
+  };
+
+  // Preparar dados para gráfico de barras
+  const prepareChartData = () => {
+    return {
+      labels: ['Entradas', 'Saídas'],
+      datasets: [{
+        data: [summary.totalIncome || 0, summary.totalExpense || 0]
+      }]
+    };
+  };
+
+  const chartConfig = {
+    backgroundGradientFrom: COLORS.white,
+    backgroundGradientTo: COLORS.white,
+    color: (opacity = 1) => `rgba(46, 204, 113, ${opacity})`,
+    strokeWidth: 2,
+    barPercentage: 0.7,
+    decimalPlaces: 0,
   };
 
   return (
@@ -141,6 +165,23 @@ const DashboardScreen = ({ navigation }) => {
           )}
         </View>
 
+        {/* Gráfico de Entradas/Saídas */}
+        {(summary.totalIncome > 0 || summary.totalExpense > 0) && (
+          <View style={styles.chartContainer}>
+            <Text style={styles.sectionTitle}>Entradas vs Saídas</Text>
+            <BarChart
+              data={prepareChartData()}
+              width={320}
+              height={200}
+              chartConfig={chartConfig}
+              style={styles.chart}
+              fromZero
+              showValuesOnTopOfBars
+              formatYLabel={(value) => `R$ ${parseFloat(value).toFixed(0)}`}
+            />
+          </View>
+        )}
+
         {/* Resumo do Mês */}
         <View style={styles.summaryContainer}>
           <Text style={styles.sectionTitle}>Resumo do Mês</Text>
@@ -167,12 +208,16 @@ const DashboardScreen = ({ navigation }) => {
             </View>
           </View>
 
-          <View style={styles.transactionCount}>
-            <Ionicons name="receipt" size={20} color={COLORS.darkGray} />
-            <Text style={styles.transactionCountText}>
+          <TouchableOpacity 
+            style={styles.transactionCount}
+            onPress={navigateToHistory}
+          >
+            <Ionicons name="receipt" size={20} color={COLORS.primary} />
+            <Text style={[styles.transactionCountText, { color: COLORS.primary }]}>
               {summary.transactionCount} transações este mês
             </Text>
-          </View>
+            <Ionicons name="chevron-forward" size={16} color={COLORS.primary} />
+          </TouchableOpacity>
         </View>
 
         {/* Botões de Ação */}
@@ -328,6 +373,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  chartContainer: {
+    backgroundColor: COLORS.white,
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 20,
+    alignItems: 'center',
+    shadowColor: COLORS.shadow,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  chart: {
+    borderRadius: 16,
+  },
   transactionCount: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -338,8 +401,8 @@ const styles = StyleSheet.create({
   },
   transactionCountText: {
     fontSize: 14,
-    color: COLORS.darkGray,
     marginLeft: 8,
+    marginRight: 4,
   },
   actionButtons: {
     marginTop: 10,

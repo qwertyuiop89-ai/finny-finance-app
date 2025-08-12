@@ -9,6 +9,7 @@ import { useAuth } from '../hooks/useAuth';
 import { COLORS } from '../constants/colors';
 
 // Auth Screens
+import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 
@@ -16,7 +17,9 @@ import RegisterScreen from '../screens/RegisterScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import AddTransactionScreen from '../screens/AddTransactionScreen';
 import ReportsScreen from '../screens/ReportsScreen';
+import HistoryScreen from '../screens/HistoryScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -155,6 +158,8 @@ const MainStackNavigator = () => {
           presentation: 'modal',
         }}
       />
+      <Stack.Screen name="History" component={HistoryScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>
   );
 };
@@ -162,9 +167,10 @@ const MainStackNavigator = () => {
 // App Navigator Principal
 const AppNavigator = () => {
   const { isAuthenticated, loading } = useAuth();
+  const [showSplash, setShowSplash] = React.useState(true);
 
-  if (loading) {
-    return null; // Ou um componente de loading
+  if (loading || showSplash) {
+    return <SplashScreen onFinish={() => setShowSplash(false)} />;
   }
 
   return (
